@@ -1,76 +1,157 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useUpadateBookMutation } from "../../features/api/apiSlice";
+import Error from "../ui/Error";
 import TextInput from "../ui/TextInput";
 
-const Form = () => {
+const Form = ({ book }) => {
+  const { id, ...rest } = book;
+
+  const [upadateBook, { isLoading, isError, isSuccess, error }] =
+    useUpadateBookMutation();
+  const [inputFieldValue, setInputFieldValue] = useState({
+    ...rest,
+    price: rest.price.toString(),
+    rating: rest.rating.toString(),
+  });
+  const navigate = useNavigate();
+  const resetForm = () => {
+    setInputFieldValue({
+      name: "",
+      author: "",
+      thumbnail: "",
+      price: "",
+      rating: "",
+      featured: false,
+    });
+  };
+  //handle submit button
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    upadateBook({
+      id,
+      data: {
+        ...inputFieldValue,
+        price: Number(inputFieldValue.price),
+        rating: Number(inputFieldValue.rating),
+      },
+    });
+  };
+  useEffect(() => {
+    if (isSuccess) {
+      resetForm();
+      navigate("/");
+    }
+    // console.log(isSuccess);
+  }, [navigate, isSuccess]);
   return (
-    <form class="book-form">
+    <form className="book-form" onSubmit={handleSubmit}>
       <TextInput
         htmlFor={"lws-bookName"}
         label="Book Name"
         required
-        class="text-input"
+        className="text-input"
         type="text"
         id="lws-bookName"
         name="name"
+        value={inputFieldValue.name}
+        onChange={(e) =>
+          setInputFieldValue({ ...inputFieldValue, name: e.target.value })
+        }
       />
       <TextInput
         htmlFor={"lws-author"}
         label="Author"
         required
-        class="text-input"
+        className="text-input"
         type="text"
         id="lws-author"
         name="author"
+        value={inputFieldValue.author}
+        onChange={(e) =>
+          setInputFieldValue({ ...inputFieldValue, author: e.target.value })
+        }
       />
       <TextInput
         htmlFor={"lws-thumbnail"}
         label="Image Url"
         required
-        class="text-input"
+        className="text-input"
         type="text"
         id="lws-thumbnail"
         name="thumbnail"
+        value={inputFieldValue.thumbnail}
+        onChange={(e) =>
+          setInputFieldValue({ ...inputFieldValue, thumbnail: e.target.value })
+        }
       />
 
-      <div class="grid grid-cols-2 gap-8 pb-4">
+      <div className="grid grid-cols-2 gap-8 pb-4">
         <TextInput
           htmlFor={"lws-price"}
           label="Price"
           required
-          class="text-input"
+          className="text-input"
           type="number"
           id="lws-price"
           name="price"
+          value={inputFieldValue.price}
+          onChange={(e) =>
+            setInputFieldValue({
+              ...inputFieldValue,
+              price: e.target.value,
+            })
+          }
         />
         <TextInput
           htmlFor={"lws-rating"}
           label="Rating"
           required
-          class="text-input"
+          className="text-input"
           type="number"
           id="lws-rating"
           name="rating"
           min="1"
           max="5"
+          value={inputFieldValue.rating}
+          onChange={(e) =>
+            setInputFieldValue({
+              ...inputFieldValue,
+              rating: e.target.value,
+            })
+          }
         />
       </div>
 
-      <div class="flex items-center">
+      <div className="flex items-center">
         <input
           id="lws-featured"
           type="checkbox"
           name="featured"
-          class="w-4 h-4"
+          className="w-4 h-4"
+          value={inputFieldValue.featured}
+          onChange={(e) =>
+            setInputFieldValue({
+              ...inputFieldValue,
+              featured: e.target.checked,
+            })
+          }
         />
-        <label for="lws-featured" class="ml-2 text-sm">
+        <label htmlFor="lws-featured" className="ml-2 text-sm">
           {" "}
           This is a featured book{" "}
         </label>
       </div>
 
-      <button type="submit" class="submit" id="lws-submit">
+      <button
+        type="submit"
+        className="submit"
+        id="lws-submit"
+        disabled={isLoading}
+      >
         Edit Book
       </button>
+      {isError && <Error message={error.message} />}
     </form>
   );
 };

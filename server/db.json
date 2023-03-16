@@ -26,6 +26,24 @@
       "rating": 4,
       "featured": true,
       "id": 4
+    },
+    {
+      "name": "Summer holiday",
+      "author": "Lily Smith",
+      "thumbnail": "https://pub-static.fotor.com/assets/projects/pages/dddda0b59fb9433eb53e7174981c8b67/blue-minimal-novel-cover-6e355184dc3545c6bec6a9f618f83e0d.jpg",
+      "price": 23,
+      "rating": 3,
+      "featured": true,
+      "id": 5
+    },
+    {
+      "name": "A journey to moon",
+      "author": "Max Born",
+      "thumbnail": "https://visme.co/blog/wp-content/uploads/2021/06/bedtime-story-book-cover-template-visme.jpg",
+      "price": 23,
+      "rating": 3,
+      "featured": false,
+      "id": 6
     }
   ]
 }

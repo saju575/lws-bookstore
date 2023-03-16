@@ -3,8 +3,8 @@ import EditBook from "../components/editBook/EditBook";
 
 const Edit = () => {
   return (
-    <main class="py-6 2xl:px-6">
-      <div class="container">
+    <main className="py-6 2xl:px-6">
+      <div className="container">
         <EditBook />
       </div>
     </main>
