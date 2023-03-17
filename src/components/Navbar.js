@@ -1,27 +1,53 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useLocation } from "react-router-dom";
 import logoImg from "../assets/images/logo.svg";
+import { searchFilter } from "../features/filters/filtersSlice";
 
 const Navbar = () => {
+  const { search } = useSelector((state) => state.filter);
+  const dispatch = useDispatch();
+  const [input, setInput] = useState(search);
+
+  //use loacation
+  const location = useLocation();
+  const handleSearch = (e) => {
+    e.preventDefault();
+    dispatch(searchFilter(input));
+  };
   return (
     <nav className="py-4 2xl:px-6">
       <div className="container flex items-center justify-between">
-        <img src={logoImg} width="150px" className="object-contain" />
+        <Link to={"/"}>
+          <img src={logoImg} width="150px" className="object-contain" />
+        </Link>
 
         <ul className="hidden md:flex items-center space-x-6">
           <Link
             to={"/"}
-            className="font-semibold cursor-pointer"
+            className={`${
+              location.pathname === "/" && "font-semibold"
+            } cursor-pointer`}
             id="lws-bookStore"
           >
             <li>Book Store</li>
           </Link>
-          <Link className="cursor-pointer" to={"/addBook"} id="lws-addBook">
+          <Link
+            className={`${
+              location.pathname === "/addBook" && "font-semibold"
+            } cursor-pointer`}
+            to={"/addBook"}
+            id="lws-addBook"
+          >
             <li>Add Book</li>
           </Link>
         </ul>
 
-        <form className="flex items-center">
+        <form
+          className="flex items-center"
+          onSubmit={handleSearch}
+          onBlur={handleSearch}
+        >
           <div className="group relative rounded-md bg-white">
             <svg
               width="20"
@@ -40,6 +66,8 @@ const Navbar = () => {
               placeholder="Filter books..."
               className="search"
               id="lws-search"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
             />
           </div>
         </form>

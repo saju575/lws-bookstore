@@ -1,10 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { useGetBooksQuery } from "../../features/api/apiSlice";
 import Error from "../ui/Error";
 import Book from "./Book";
 
 const Books = () => {
   const { isLoading, isError, error, data: books } = useGetBooksQuery();
+  const { tag, search } = useSelector((state) => state.filter);
 
   // what to rander
   let content = null;
@@ -18,7 +20,24 @@ const Books = () => {
     content = <Error message={"No books found"} />;
   }
   if (!isLoading && !isError && books.length > 0) {
-    content = books.map((book) => <Book key={book.id} book={book} />);
+    const copyBook = books
+      .filter((book) => {
+        if (search) {
+          return book.name.toLowerCase().includes(search.toLowerCase());
+        }
+        return true;
+      })
+      .filter((book) => {
+        if (tag === "featured") {
+          return book.featured;
+        }
+        return true;
+      });
+    if (copyBook.length > 0) {
+      content = copyBook.map((book) => <Book key={book.id} book={book} />);
+    } else {
+      content = <Error message={"No book found! "} />;
+    }
   }
 
   return (
